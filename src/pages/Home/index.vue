@@ -1,10 +1,34 @@
 <template>
-	<div>首頁</div>
+	<div>
+		<!-- 三級連動組件 -->
+		<TypeNav />
+		<ListContainer />
+		<Rank />
+		<Like />
+		<Floor />
+		<Floor />
+		<Brand />
+	</div>
 </template>
 
 <script>
+	import ListContainer from '@/pages/Home/ListContainer';
+	import Recommend from '@/pages/Home/Recommend';
+	import Rank from '@/pages/Home/Rank';
+	import Like from '@/pages/Home/Like';
+	import Floor from '@/pages/Home/Floor';
+	import Brand from '@/pages/Home/Brand';
+
 	export default {
 		name: 'Home',
+		components: {
+			ListContainer,
+			Recommend,
+			Rank,
+			Like,
+			Floor,
+			Brand,
+		},
 	};
 </script>
 

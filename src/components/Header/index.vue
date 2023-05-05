@@ -47,7 +47,8 @@
 					<input
 						type="text"
 						id="autocomplete"
-						class="input-error input-xxlarge" />
+						class="input-error input-xxlarge"
+						v-model="keyword" />
 					<button
 						class="sui-btn btn-xlarge btn-danger"
 						type="button"
@@ -63,12 +64,25 @@
 <script>
 	export default {
 		name: 'Header',
+		data() {
+			return {
+				keyword: '',
+			};
+		},
 		methods: {
 			/**
 			 * 搜索按鈕的callback: 跳轉到search頁面
 			 */
 			goSearch() {
-				this.$router.push('/search');
+				this.$router.push({
+					name: 'search',
+					params: {
+						keyword: this.keyword,
+					},
+					query: {
+						k: this.keyword,
+					},
+				});
 			},
 		},
 	};
