@@ -1,8 +1,11 @@
 import Vue from 'vue';
 import App from './App.vue';
-
+// 引入路由
 import router from '@/router';
-import TypeNav from '@/pages/Home/TypeNav';
+// 引入倉庫
+import store from '@/store';
+
+import TypeNav from '@/components/TypeNav';
 
 Vue.config.productionTip = false;
 
@@ -13,5 +16,8 @@ Vue.component(TypeNav.name, TypeNav);
 new Vue({
 	el: '#app',
 	render: h => h(App),
-	router,
+	// 註冊路由外掛
+	router, // 每個元件都會擁有 $router 和 $route 屬性
+	// 註冊倉庫外掛
+	store, // 每個元件都會擁有 $store 屬性
 });
