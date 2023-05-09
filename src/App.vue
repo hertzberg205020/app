@@ -17,6 +17,11 @@
 			Header,
 			Footer,
 		},
+		mounted() {
+			// 通知vuex發起請求，獲取數據，存儲於倉庫中
+			// 派發一個action，獲取商品分類的三級列表數據
+			this.$store.dispatch('home/getCategoryList');
+		},
 	};
 </script>
 

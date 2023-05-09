@@ -64,11 +64,17 @@ VueRouter.prototype.replace = function (location, resolve, reject) {
 export default new VueRouter({
 	// 配置路由
 	routes: [
-		{ path: '/home', meta: { isShowFooter: true }, component: Home },
+		{
+			path: '/home',
+			meta: { isShowFooter: true },
+			component: Home,
+		},
 		{
 			path: '/search/:keyword',
 			name: 'search',
-			meta: { isShowFooter: true },
+			meta: {
+				isShowFooter: true,
+			},
 			component: Search,
 		},
 		{ path: '/login', component: Login },

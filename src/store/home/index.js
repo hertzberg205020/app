@@ -5,12 +5,13 @@ const state = {
 	categoryList: [],
 };
 const getters = {};
+
 const mutations = {
 	GetCategoryList(state, val) {
 		state.categoryList = val;
-		console.log(state.categoryList);
 	},
 };
+
 const actions = {
 	async getCategoryList(ctx, val) {
 		let rsp = await reqCategoryList();
