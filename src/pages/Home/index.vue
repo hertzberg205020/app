@@ -5,13 +5,17 @@
 		<ListContainer />
 		<Rank />
 		<Like />
-		<Floor />
-		<Floor />
+		<Floor
+			v-for="floor in floorList"
+			:key="floor.id"
+			:floor-info="floor" />
 		<Brand />
 	</div>
 </template>
 
 <script>
+	import { mapState, mapActions } from 'vuex';
+
 	import ListContainer from '@/pages/Home/ListContainer';
 	import Recommend from '@/pages/Home/Recommend';
 	import Rank from '@/pages/Home/Rank';
@@ -28,6 +32,15 @@
 			Like,
 			Floor,
 			Brand,
+		},
+		methods: {
+			...mapActions('home', ['getFloorList']),
+		},
+		computed: {
+			...mapState('home', ['floorList']),
+		},
+		mounted() {
+			this.getFloorList();
 		},
 	};
 </script>

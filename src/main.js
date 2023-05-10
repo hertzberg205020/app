@@ -6,6 +6,10 @@ import router from '@/router';
 import store from '@/store';
 
 import TypeNav from '@/components/TypeNav';
+// 引入 mockServer.js 檔案  -> mock數據
+import '@/mock/mockServer';
+// 引入 swiper 樣式
+import 'swiper/css/swiper.css';
 
 Vue.config.productionTip = false;
 

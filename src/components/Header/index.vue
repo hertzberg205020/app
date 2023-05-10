@@ -74,15 +74,21 @@
 			 * 搜索按鈕的callback: 跳轉到search頁面
 			 */
 			goSearch() {
-				this.$router.push({
+				const location = {
 					name: 'search',
 					params: {
-						keyword: this.keyword,
+						// 一定要有undefined，否則當傳遞的keyword為空字串會導致路由錯誤
+						// /search/:keyword?... -> /?... 路由路徑中的search消失了
+						keyword: this.keyword || undefined,
 					},
-					query: {
-						k: this.keyword,
-					},
-				});
+				};
+
+				// 若有query參數也需要攜帶
+				if (this.$route.query) {
+					location.query = this.$route.query;
+				}
+
+				this.$router.push(location);
 			},
 		},
 	};

@@ -5,10 +5,13 @@
 				<!--banner轮播-->
 				<div
 					class="swiper-container"
-					id="mySwiper">
+					ref="mySwiper">
 					<div class="swiper-wrapper">
-						<div class="swiper-slide">
-							<img src="./images/banner1.jpg" />
+						<div
+							class="swiper-slide"
+							v-for="carousel in bannerList"
+							:key="carousel.id">
+							<img :src="carousel.imgUrl" />
 						</div>
 						<!--
                         <div class="swiper-slide">
@@ -119,8 +122,60 @@
 </template>
 
 <script>
+	import { mapState, mapActions } from 'vuex';
+	// 引入輪播圖插件
+	import Swiper from 'swiper';
+
 	export default {
 		name: 'ListContainer',
+		data() {
+			return {
+				mySwiper: null,
+			};
+		},
+		methods: {
+			...mapActions('home', ['getBannerList']),
+		},
+		computed: {
+			...mapState('home', ['bannerList']),
+		},
+		mounted() {
+			// 通過Vuex發起ajax請求，將數據存到store中
+			this.getBannerList();
+			// 在 new Swiper() 實例之前，頁面中必須要有輪播圖的結構
+			// 因為dispatch當中涉及到了非同步操作，導致 v-for 遍歷時結構還未完整
+		},
+		watch: {
+			// 監聽bannerList數據的變化
+			bannerList: {
+				// 通過watch監測bannerList屬性值的變化
+				// 一旦數據發生變化，就會觸發handler函數
+				// 若執行了handler函數，表示元件上的數據已經更新，從空陣列變成了有數據的陣列
+				// handler方法執行時，只能保證bannerList數據已經有了，但無法保證 v-for 已經遍歷完成
+				// v-for 遍歷完成時才會有完整結構
+				handler(newVal, oldVal) {
+					this.$nextTick(() => {
+						// 當執行這個callback函數時，保證了數據已經收到，v-for執行完畢，輪播圖的結構已經完整
+						this.mySwiper = new Swiper(this.$refs.mySwiper, {
+							loop: true, // 循环模式选项
+
+							// 如果需要分页器
+							pagination: {
+								el: '.swiper-pagination',
+								// 點擊小球切換圖片
+								clickable: true,
+							},
+
+							// 如果需要前进后退按钮
+							navigation: {
+								nextEl: '.swiper-button-next',
+								prevEl: '.swiper-button-prev',
+							},
+						});
+					});
+				},
+			},
+		},
 	};
 </script>
 

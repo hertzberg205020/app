@@ -167,7 +167,14 @@
 				}
 
 				// 整理完參數
+				// 給location添加query參數
 				location.query = query;
+
+				// 判斷: 若路由跳轉時，帶有params參數，需要攜帶
+				if (this.$route.params) {
+					location.params = this.$route.params;
+				}
+
 				// 路由跳轉
 				this.$router.push(location);
 			},
