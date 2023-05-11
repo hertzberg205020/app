@@ -5,6 +5,7 @@
 		<ListContainer />
 		<Rank />
 		<Like />
+		<!-- Floor元件: 內部是沒有發出起請求，數據是父元件提供 -->
 		<Floor
 			v-for="floor in floorList"
 			:key="floor.id"

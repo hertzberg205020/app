@@ -5,13 +5,18 @@
 				<h3 class="fl">{{ floorInfo.name }}</h3>
 				<div class="fr">
 					<ul class="nav-tabs clearfix">
-						<li class="active">
+						<li
+							active-class="active"
+							v-for="(item, index) in floorInfo.navList"
+							:key="index">
 							<a
 								href="#tab1"
 								data-toggle="tab"
-								>热门</a
+								>{{ item.text }}</a
 							>
 						</li>
+
+						<!--
 						<li>
 							<a
 								href="#tab2"
@@ -54,6 +59,7 @@
 								>高端电器</a
 							>
 						</li>
+						-->
 					</ul>
 				</div>
 			</div>
@@ -62,59 +68,47 @@
 					<div class="floor-1">
 						<div class="blockgary">
 							<ul class="jd-list">
-								<li>节能补贴</li>
+								<li
+									v-for="(
+										keyword, index
+									) in floorInfo.keywords"
+									:key="index">
+									{{ keyword }}
+								</li>
+								<!--
 								<li>4K电视</li>
 								<li>空气净化器</li>
 								<li>IH电饭煲</li>
 								<li>滚筒洗衣机</li>
 								<li>电热水器</li>
+								-->
 							</ul>
-							<img src="./images/floor-1-1.png" />
+							<img :src="floorInfo.imgUrl" />
 						</div>
 						<div class="floorBanner">
-							<div
-								class="swiper-container"
-								ref="floor1Swiper">
-								<div class="swiper-wrapper">
-									<div class="swiper-slide">
-										<img src="./images/floor-1-b01.png" />
-									</div>
-									<!--
-									<div class="swiper-slide">
-										<img src="./images/floor-1-b02.png" />
-									</div>
-									<div class="swiper-slide">
-										<img src="./images/floor-1-b03.png" />
-									</div>
-                                    -->
-								</div>
-								<!-- 如果需要分页器 -->
-								<div class="swiper-pagination"></div>
-
-								<!-- 如果需要导航按钮 -->
-								<div class="swiper-button-prev"></div>
-								<div class="swiper-button-next"></div>
-							</div>
+							<!-- 輪播圖 -->
+							<Carousel :carouselList="floorInfo.carouselList" />
 						</div>
+
 						<div class="split">
 							<span class="floor-x-line"></span>
 							<div class="floor-conver-pit">
-								<img src="./images/floor-1-2.png" />
+								<img :src="floorInfo.recommendList[0]" />
 							</div>
 							<div class="floor-conver-pit">
-								<img src="./images/floor-1-3.png" />
+								<img :src="floorInfo.recommendList[1]" />
 							</div>
 						</div>
 						<div class="split center">
-							<img src="./images/floor-1-4.png" />
+							<img :src="floorInfo.bigImg" />
 						</div>
 						<div class="split">
 							<span class="floor-x-line"></span>
 							<div class="floor-conver-pit">
-								<img src="./images/floor-1-5.png" />
+								<img :src="floorInfo.recommendList[2]" />
 							</div>
 							<div class="floor-conver-pit">
-								<img src="./images/floor-1-6.png" />
+								<img :src="floorInfo.recommendList[3]" />
 							</div>
 						</div>
 					</div>
@@ -130,15 +124,64 @@
 	export default {
 		name: 'Floor',
 		data() {
-			return {
-				floor1Swiper: null,
-			};
+			return {};
 		},
 		props: ['floorInfo'],
 		computed: {},
 		methods: {},
-		mounted() {},
-		watch: {},
+		mounted() {
+			// 首次使用輪播圖swiper時，無法在mounted中使用，但為什麼此處可以？
+			// 首次使用時，後端數據資源的請求是由當前元件內部發起的，至少需要等待伺服器返回數據後
+			// 頁面才能動態渲染出來，獲取完整的DOM結構，因此當時是不行的。
+			// 現在為什麼可以? 因為請求是父元件派發的，父元件通過 props 傳遞數據，
+			// 在結構完整的情況下執行mounted是沒問題的
+			// const mySwiper = new Swiper(this.$refs.floor1Swiper, {
+			// 	loop: true, // 循环模式选项
+			// 	// 如果需要分页器
+			// 	pagination: {
+			// 		el: '.swiper-pagination',
+			// 		// 點擊小球切換圖片
+			// 		clickable: true,
+			// 	},
+			// 	// 如果需要前进后退按钮
+			// 	navigation: {
+			// 		nextEl: '.swiper-button-next',
+			// 		prevEl: '.swiper-button-prev',
+			// 	},
+			// });
+		},
+
+		// watch: {
+		// 	// 立即監聽: 不論數據有無變化，一上來就先執行一次
+		// 	// 為何watch監聽不到floorInfo的變化？ 因為該數據從未發生過變化，
+		// 	// 數據是由父元件通過 props 傳遞
+		// 	floorInfo: {
+		// 		immediate: true,
+
+		// 		handler(newVal, oldVal) {
+		// 			// 只能監聽到數據已經有了，但v-for動態渲染的結構還是無法確認是否已經渲染完成
+		// 			// 因此需要使用nextTick
+		// 			this.$nextTick(() => {
+		// 				const mySwiper = new Swiper(this.$refs.floor1Swiper, {
+		// 					loop: true, // 循环模式选项
+
+		// 					// 如果需要分页器
+		// 					pagination: {
+		// 						el: '.swiper-pagination',
+		// 						// 點擊小球切換圖片
+		// 						clickable: true,
+		// 					},
+
+		// 					// 如果需要前进后退按钮
+		// 					navigation: {
+		// 						nextEl: '.swiper-button-next',
+		// 						prevEl: '.swiper-button-prev',
+		// 					},
+		// 				});
+		// 			});
+		// 		},
+		// 	},
+		// },
 	};
 </script>
 
