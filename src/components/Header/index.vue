@@ -48,7 +48,7 @@
 						type="text"
 						id="autocomplete"
 						class="input-error input-xxlarge"
-						v-model="keyword" />
+						v-model.trim="keyword" />
 					<button
 						class="sui-btn btn-xlarge btn-danger"
 						type="button"
@@ -87,7 +87,6 @@
 				if (this.$route.query) {
 					location.query = this.$route.query;
 				}
-
 				this.$router.push(location);
 			},
 		},

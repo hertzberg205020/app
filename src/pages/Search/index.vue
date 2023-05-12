@@ -12,10 +12,18 @@
 						</li>
 					</ul>
 					<ul class="fl sui-tag">
-						<li class="with-x">手机</li>
-						<li class="with-x">iphone<i>×</i></li>
-						<li class="with-x">华为<i>×</i></li>
-						<li class="with-x">OPPO<i>×</i></li>
+						<li
+							class="with-x"
+							v-if="searchParams.categoryName">
+							{{ searchParams.categoryName }}
+							<i @click="removeCategoryName">×</i>
+						</li>
+						<li
+							class="with-x"
+							v-if="searchParams.keyword">
+							{{ searchParams.keyword }}
+							<i @click="removeKeyword">×</i>
+						</li>
 					</ul>
 				</div>
 
@@ -145,6 +153,7 @@
 	import { mapGetters } from 'vuex';
 
 	export default {
+		// eslint-disable-next-line vue/multi-word-component-names
 		name: 'Search',
 		data() {
 			return {
@@ -177,6 +186,7 @@
 		},
 		// 在元件畫面掛載完畢之前執行一次 (在mounted之前執行)
 		beforeMount() {
+			// 在發請求之前，將伺服器 api 所需要的參數整理好
 			// this.searchParams = { ...this.searchParams, ...this.$route.query };
 			// this.searchParams.keyword = this.$route.params.keyword;
 
@@ -197,6 +207,57 @@
 		methods: {
 			getSearchInfo() {
 				this.$store.dispatch('search/getSearchInfo', this.searchParams);
+			},
+			/**
+			 * 將searchParams中的category相關的訊息清空
+			 * 再向伺服器發送請求
+			 * @description: 移除面包屑
+			 * @target: 面包屑
+			 */
+			removeCategoryName() {
+				// 修改路由: 進行路由跳轉
+				this.$router.push({
+					name: 'search',
+					params: {
+						keyword: this.searchParams.keyword || undefined,
+					},
+				});
+				// ajax傳遞參數時，若參數為undefined，則不會傳遞該參數，節省傳輸流量
+				this.searchParams.categoryName = undefined;
+				this.searchParams.category1Id = undefined;
+				this.searchParams.category2Id = undefined;
+				this.searchParams.category3Id = undefined;
+
+				this.getSearchInfo();
+			},
+
+			removeKeyword() {
+				// 修改路由: 進行路由跳轉
+				const location = {
+					name: 'search',
+				};
+
+				if (this.$router.query.categoryName) {
+					location.query = this.$router.query;
+				}
+				this.$router.push(location);
+				// ajax傳遞參數時，若參數為undefined，則不會傳遞該參數，節省傳輸流量
+				this.getSearchInfo();
+			},
+		},
+		// 監聽元件實例身上的屬性值變化
+		watch: {
+			// 監聽路由路徑是否發生變化，若發生變化，再次向伺服器送請求
+			$route(newVal) {
+				// 再次發出請求之前，整理要傳給伺服器的參數
+				Object.assign(this.searchParams, newVal.query, newVal.params);
+				// 發送ajax請求
+				this.getSearchInfo();
+				// 每次請求完畢，都要將一級、二級、三級分類的id清空，讓其不會影響下一次請求
+				// categoryName, keyword 都會被新的值給置換掉
+				this.searchParams.category1Id = undefined;
+				this.searchParams.category2Id = undefined;
+				this.searchParams.category3Id = undefined;
 			},
 		},
 	};

@@ -103,6 +103,7 @@
 			...mapActions('home', ['getCategoryList']),
 
 			/**
+			 * 導航列滑鼠移入移出動畫效果
 			 * @description: 滑鼠移入時，改變currentIndex的值
 			 * @param {Number} index
 			 * @return {undefined}
@@ -171,8 +172,10 @@
 				location.query = query;
 
 				// 判斷: 若路由跳轉時，帶有params參數，需要攜帶
-				if (this.$route.params) {
+				if (this.$route.params.keyword) {
 					location.params = this.$route.params;
+				} else {
+					location.params = { keyword: undefined };
 				}
 
 				// 路由跳轉
