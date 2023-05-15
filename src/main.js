@@ -11,6 +11,27 @@ import Carousel from '@/components/Carousel';
 import '@/mock/mockServer';
 // 引入 swiper 樣式
 import 'swiper/css/swiper.css';
+// 引入 bootstrap 樣式
+// import 'bootstrap/dist/css/bootstrap.min.css'
+// import "bootstrap"
+
+
+/* import the fontawesome core */
+import { library } from '@fortawesome/fontawesome-svg-core'
+
+/* import font awesome icon component */
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+
+/* import specific icons */
+import { faUserSecret } from '@fortawesome/free-solid-svg-icons'
+import { faPhone } from '@fortawesome/free-solid-svg-icons'
+
+/* add icons to the library */
+library.add(faUserSecret)
+library.add(faPhone)
+
+/* add font awesome icon component */
+Vue.component('font-awesome-icon', FontAwesomeIcon)
 
 Vue.config.productionTip = false;
 
@@ -22,6 +43,11 @@ Vue.component(Carousel.name, Carousel);
 new Vue({
 	el: '#app',
 	render: h => h(App),
+	// 配置全域事件總線
+	beforeCreate() {
+		Vue.prototype.$bus = this;
+	},
+
 	// 註冊路由外掛
 	router, // 每個元件都會擁有 $router 和 $route 屬性
 	// 註冊倉庫外掛

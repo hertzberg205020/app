@@ -6,7 +6,8 @@
 				<ul class="logo-list">
 					<li
 						v-for="trademark in trademarkList"
-						:key="trademark.tmId">
+						:key="trademark.tmId"
+						@click="tradeMarkHandler(trademark)">
 						{{ trademark.tmName }}
 					</li>
 				</ul>
@@ -20,16 +21,20 @@
 				<a href="javascript:void(0);">更多</a>
 			</div>
 		</div>
+		<!-- 商品屬性 -->
 		<div
 			class="type-wrap"
 			v-for="attr in attrsList"
 			:key="attr.attrId">
+			<!-- 商品的各式屬性名稱: 例如: 顏色 -->
 			<div class="fl key">{{ attr.attrName }}</div>
 			<div class="fl value">
 				<ul class="type-list">
+					<!-- 商品的各式屬性值: 例如: 黑、白、粉、金 -->
 					<li
 						v-for="(attrVal, index) in attr.attrValueList"
-						:key="index">
+						:key="index"
+						@click="attrInfoHandler(attr, attrVal)">
 						<a>{{ attrVal }}</a>
 					</li>
 				</ul>
@@ -45,6 +50,19 @@
 		name: 'SearchSelector',
 		computed: {
 			...mapGetters('search', ['trademarkList', 'attrsList']),
+		},
+		methods: {
+			tradeMarkHandler(trademark) {
+				// 點擊品牌，向server發起請求，獲取相應的數據進行展示
+				// 問題: 在哪邊發起請求? 父元件還是子元件?
+				// 答案: 父元件
+				// 因為父元件中的searchParams數據是傳遞給server的參數，子元件需要將被點擊的品牌資訊傳遞給父元件 -> 通過自定義事件
+				this.$emit('trademarkInfo', trademark);
+			},
+
+			attrInfoHandler(attr, attrVal) {
+				this.$emit('attrInfo', attr, attrVal);
+			},
 		},
 	};
 </script>

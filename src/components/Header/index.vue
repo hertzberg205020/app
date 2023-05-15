@@ -90,6 +90,12 @@
 				this.$router.push(location);
 			},
 		},
+		mounted() {
+			// 通過全域事件總線清除關鍵字
+			this.$bus.$on('clearKeyword', () => {
+				this.keyword = '';
+			});
+		},
 	};
 </script>
 

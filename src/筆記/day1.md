@@ -90,7 +90,7 @@ V即为相应的路由组件
 5.2安装路由
  ```cnpm install --save vue-router ```
 
- ```npm i vue-ruoter@3```
+ ```npm i vue-router@3```
 
 --save:可以让你安装的依赖，在package.json文件当中进行记录
 5.3创建路由组件【一般放在views|pages文件夹】
