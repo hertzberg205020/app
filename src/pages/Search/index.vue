@@ -49,17 +49,30 @@
             <div class="navbar-inner filter">
               <!-- 排序方式 -->
               <ul class="sui-nav">
-                <li :class="{ active: isOrderByIntegration }">
+                <li
+                  :class="{ active: isOrderByIntegration }"
+                  @click="changeOrderStatus('1')"
+                >
                   <a>
                     综合
-                    <span v-show="isOrderByIntegration">⬆</span>
+                    <font-awesome-icon
+                      v-show="isOrderByIntegration"
+                      :icon="displayIconStyle"
+                    />
+                    <!-- <span>⬆</span> -->
                   </a>
-                  <font-awesome-icon :icon="['fas', 'phone']" />
                 </li>
-                <li :class="{ active: isOrderByPrice }">
+                <li
+                  :class="{ active: isOrderByPrice }"
+                  @click="changeOrderStatus('2')"
+                >
                   <a>
                     价格
-                    <span v-show="isOrderByPrice">⬆</span>
+                    <font-awesome-icon
+                      v-show="isOrderByPrice"
+                      :icon="displayIconStyle"
+                    />
+                    <!-- <span v-show="isOrderByPrice">⬆</span> -->
                   </a>
                 </li>
                 <!-- <li>
@@ -116,7 +129,9 @@
             </ul>
           </div>
           <!-- 分頁器 -->
-          <div class="fr page">
+          <!-- 測試階段: 先使用假數據替換 -->
+          <Pagination :pageNo="1" :pageSize="3" :total="91" :continues="5" />
+          <!-- <div class="fr page">
             <div class="sui-pagination clearfix">
               <ul>
                 <li class="prev disabled">
@@ -144,7 +159,7 @@
               </ul>
               <div><span>共10页&nbsp;</span></div>
             </div>
-          </div>
+          </div> -->
         </div>
       </div>
     </div>
@@ -152,26 +167,26 @@
 </template>
 
 <script>
-import SearchSelector from "./SearchSelector/SearchSelector";
-import { mapGetters } from "vuex";
+import SearchSelector from './SearchSelector/SearchSelector';
+import { mapGetters } from 'vuex';
 
 export default {
   // eslint-disable-next-line vue/multi-word-component-names
-  name: "Search",
+  name: 'Search',
   data() {
     return {
       // 傳給伺服器 api的參數
       searchParams: {
         // 一級分類的id
-        category1Id: "",
-        category2Id: "",
-        category3Id: "",
+        category1Id: '',
+        category2Id: '',
+        category3Id: '',
         // 分類名稱
-        categoryName: "",
+        categoryName: '',
         // 查詢關鍵字
-        keyword: "",
+        keyword: '',
         // 排序方式
-        order: "",
+        order: '2:asc',
         // 表示當前頁數
         pageNo: 1,
         // 表示每頁顯示的筆數
@@ -179,8 +194,9 @@ export default {
         // 銷售屬性參數
         props: [],
         // 品牌
-        trademark: ""
-      }
+        trademark: ''
+      },
+      iconStyle: ['fas', 'arrow-up', 'arrow-down']
     };
   },
 
@@ -201,20 +217,26 @@ export default {
     this.getSearchInfo();
   },
   computed: {
-    ...mapGetters("search", ["goodList"]),
+    ...mapGetters('search', ['goodList']),
     trademarkName() {
-      return this.searchParams.trademark.split(":")[1];
+      return this.searchParams.trademark.split(':')[1];
     },
     isOrderByPrice() {
-      return this.searchParams.order.indexOf("2") !== -1;
+      return this.searchParams.order.indexOf('2') !== -1;
     },
     isOrderByIntegration() {
-      return this.searchParams.order.indexOf("1") !== -1;
+      return this.searchParams.order.indexOf('1') !== -1;
+    },
+    displayIconStyle() {
+      if (this.searchParams.order.indexOf('asc') !== -1) {
+        return this.iconStyle.filter(e => e !== 'arrow-down');
+      }
+      return this.iconStyle.filter(e => e !== 'arrow-up');
     }
   },
   methods: {
     getSearchInfo() {
-      this.$store.dispatch("search/getSearchInfo", this.searchParams);
+      this.$store.dispatch('search/getSearchInfo', this.searchParams);
     },
 
     /**
@@ -232,7 +254,7 @@ export default {
       this.searchParams.category3Id = undefined;
 
       this.$router.push({
-        name: "search",
+        name: 'search',
         params: {
           keyword: this.searchParams.keyword || undefined
         }
@@ -247,11 +269,11 @@ export default {
       this.searchParams.keyword = undefined;
 
       // header 元件中的搜索框也要清空
-      this.$bus.$emit("clearKeyword");
+      this.$bus.$emit('clearKeyword');
 
       // 修改路由: 進行路由跳轉
       const location = {
-        name: "search"
+        name: 'search'
       };
 
       if (this.$router.query.categoryName) {
@@ -308,6 +330,25 @@ export default {
       this.searchParams.props.splice(index, 1);
       // 發出請求
       this.getSearchInfo();
+    },
+
+    /**
+     * @type {String} type 排序方式，使用者點擊li標籤，用於區分是綜合(1), 還是價格(2)
+     * @description: 改變商品排序方式
+     */
+    changeOrderStatus(type) {
+      const originType = this.searchParams.order.split(':')[0];
+      const originSort = this.searchParams.order.split(':')[1];
+      let curSort = 'desc';
+      // 判斷是否變更排序種類
+      if (originType === type) {
+        // 升序或降序
+        curSort = originSort === 'asc' ? 'desc' : 'asc';
+      }
+      this.searchParams.order = `${type}:${curSort}`;
+
+      // 發送請求
+      this.getSearchInfo();
     }
   },
   // 監聽元件實例身上的屬性值變化
@@ -327,7 +368,7 @@ export default {
   },
   filters: {
     showPropName(prop) {
-      return prop.split(":")[1];
+      return prop.split(':')[1];
     }
   }
 };
