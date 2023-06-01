@@ -190,10 +190,16 @@
 		},
 		computed: {
 			...mapState({
+        // 使用計算屬性的時候，右側的函數會執行。
 				categoryList: state => state.home.categoryList,
 			}),
 		},
 		mounted() {
+      // 通知vuex發出請求
+      // 為避免組件重複掛載時，重複發出請求
+      // 將請求移到app.vue中
+      // this.store.dispatch('home/getCategoryList');
+
 			if (this.$route.path === '/home') {
 				this.show = true;
 			}
