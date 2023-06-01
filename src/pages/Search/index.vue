@@ -130,7 +130,13 @@
           </div>
           <!-- 分頁器 -->
           <!-- 測試階段: 先使用假數據替換 -->
-          <Pagination :pageNo="1" :pageSize="3" :total="91" :continues="5" />
+          <Pagination
+            :pageNo="searchParams.pageNo"
+            :pageSize="searchParams.pageSize"
+            :total="searchInfo.total"
+            :continues="5"
+            @changePage="changePage"
+          />
           <!-- <div class="fr page">
             <div class="sui-pagination clearfix">
               <ul>
@@ -168,7 +174,7 @@
 
 <script>
 import SearchSelector from './SearchSelector/SearchSelector';
-import { mapGetters } from 'vuex';
+import { mapGetters, mapState } from 'vuex';
 
 export default {
   // eslint-disable-next-line vue/multi-word-component-names
@@ -218,6 +224,7 @@ export default {
   },
   computed: {
     ...mapGetters('search', ['goodList']),
+    ...mapState('search', ['searchInfo']),
     trademarkName() {
       return this.searchParams.trademark.split(':')[1];
     },
@@ -347,6 +354,17 @@ export default {
       }
       this.searchParams.order = `${type}:${curSort}`;
 
+      // 發送請求
+      this.getSearchInfo();
+    },
+
+    /**
+     * @description: 改變頁碼
+     * @param {Number} pageNo 要跳轉的頁碼
+     */
+    changePage(pageNo) {
+      // 修改要傳遞給伺服器的參數
+      this.searchParams.pageNo = pageNo;
       // 發送請求
       this.getSearchInfo();
     }

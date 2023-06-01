@@ -1,18 +1,27 @@
 <template>
   <div class="pagination">
-    <button>上一頁</button>
-    <button>1</button>
-    <button>···</button>
+    <button :disabled="pageNo == 1" @click="changePage(pageNo - 1)">
+      上一頁
+    </button>
+    <button v-show="startAndEndNum.start > 1" @click="changePage(1)">1</button>
+    <button v-show="startAndEndNum.start > 2">···</button>
 
-    <button>3</button>
-    <button>4</button>
-    <button>5</button>
-    <button>6</button>
-    <button>7</button>
+    <button
+      v-for="(page, index) in range(startAndEndNum)"
+      :key="index"
+      @click="changePage(page)"
+      :class="{ active: pageNo === page }"
+    >
+      {{ page }}
+    </button>
 
-    <button>···</button>
-    <button>{{ pages }}</button>
-    <button>下一頁</button>
+    <button v-show="startAndEndNum.end < pages - 1">···</button>
+    <button v-show="startAndEndNum.end < pages" @click="changePage(pages)">
+      {{ pages }}
+    </button>
+    <button :disabled="pageNo === pages" @click="changePage(pages + 1)">
+      下一頁
+    </button>
 
     <button style="margin-left: 30px">共 {{ total }} 筆</button>
   </div>
@@ -56,6 +65,18 @@ export default {
         }
       }
       return { start, end };
+    }
+  },
+  methods: {
+    range({ start, end }) {
+      const range = [];
+      for (let i = start; i < end + 1; i++) {
+        range.push(i);
+      }
+      return range;
+    },
+    changePage(pageNo) {
+      this.$emit('changePage', pageNo);
     }
   }
 };
